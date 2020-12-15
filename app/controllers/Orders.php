@@ -114,8 +114,17 @@ class Orders extends Controller
 
         // Product Stock Counting Logic
         foreach ($cart as $key => $cartItem) {
-            $result_stock = $cart[$key]->stock - $quantity[$key]["quantity"];
-            $this->productModel->updateStock($cart[$key]->id, $result_stock);
+            $qty = $quantity[$key]["quantity"];
+
+            // Cart Stock Check 
+            if ($cartItem->stock < $qty) {
+                flash("stock_error", "[ $cartItem->name ] 希望する商品の数が残っている在庫の量より多いです。[ $cartItem->name ] の在庫 ( $cartItem->stock )", "alert alert-danger");
+                redirect("orders/index");
+                exit();
+            } else {
+                $result_stock = $cart[$key]->stock - $quantity[$key]["quantity"];
+                $this->productModel->updateStock($cart[$key]->id, $result_stock);
+            }
         }
 
         // Payment Logic

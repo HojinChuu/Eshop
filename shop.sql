@@ -61,5 +61,8 @@ user_id INT,
 created_at datetime DEFAULT CURRENT_TIMESTAMP,
 FOREIGN KEY (user_id)
 REFERENCES users (id)
+ON DELETE CASCADE,
+FOREIGN KEY (product_id)
+REFERENCES products (id)
 ON DELETE CASCADE
 );

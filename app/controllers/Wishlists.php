@@ -21,7 +21,7 @@ class Wishlists extends Controller
         $user_id = $_SESSION["user_id"];
         $product_id = $id;
 
-        if ($this->wishlistModel->findById($product_id)) {
+        if ($this->wishlistModel->findById($user_id)) {
             $this->wishlistModel->create($user_id, $product_id);
         }
 

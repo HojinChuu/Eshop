@@ -34,11 +34,11 @@ class Wishlist
         return $this->db->resultSet();
     }
 
-    public function findById($product_id)
+    public function findById($user_id)
     {
-        $sql = "SELECT * FROM wishList WHERE product_id = :product_id";
+        $sql = "SELECT * FROM wishList WHERE user_id = :user_id";
         $this->db->query($sql);
-        $this->db->bind(":product_id", $product_id);
+        $this->db->bind(":user_id", $user_id);
         $this->db->execute();
 
         return $this->db->rowCount() > 0 ? false : true;
