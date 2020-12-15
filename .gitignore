@@ -1,0 +1,11 @@
+public/img/*.png
+public/img/*.jpg
+public/img/*.jpeg
+
+public/upload/*.png
+public/upload/*.jpg
+public/upload/*.jpeg
+
+feedback.txt
+
+/app/config/config.php
