@@ -1,17 +1,17 @@
 <?php require APPROOT . "/views/default/header.php"; ?>
 
-<div class="row">
-    <main role="main" class="col-md-12 ml-sm-auto col-lg-12 px-12">
-        <a href="<?= URLROOT ?>/users/mypage" class="btn btn-dark mr-4">BACK</a>
-        <h2 class="mt-5">Code No.<?= $data["order"][0]->order_id ?></h2>
+    <div class="row">
+        <main role="main" class="col-md-12 ml-sm-auto col-lg-12 px-12">
+            <a href="<?= URLROOT ?>/users/mypage" class="btn btn-dark mr-4">BACK</a>
+            <h2 class="mt-5">Code No.<?= $data["order"][0]->order_id ?></h2>
 
-        <!-- MY INFO -->
-        <div class="card text-center" style="width: 40rem; margin: auto;">
-            <div class="card-body">
-                <h3 class="card-title">Order Destination</h3>
-            </div>
-            <table class="table">
-                <tbody class="text-left">
+            <!-- MY INFO -->
+            <div class="card text-center" style="width: 40rem; margin: auto;">
+                <div class="card-body">
+                    <h3 class="card-title">Order Destination</h3>
+                </div>
+                <table class="table">
+                    <tbody class="text-left">
                     <tr>
                         <th scope="row" class="pl-5">Name : </th>
                         <td><?= $data["userinfo"]->firstname . " " . $data["userinfo"]->lastname ?></td>
@@ -32,13 +32,13 @@
                         <th scope="row" class="pl-5">Phone Number : </th>
                         <td colspan="2"><?= $data["userinfo"]->phone ?></td>
                     </tr>
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
 
-        <div class="table table-responsive mt-5">
-            <table class="table table-striped table-sm">
-                <thead class="text-center">
+            <div class="table table-responsive mt-5">
+                <table class="table table-striped table-sm">
+                    <thead class="text-center">
                     <tr>
                         <th>Image</th>
                         <th>name</th>
@@ -47,8 +47,8 @@
                         <th>price</th>
                         <th>total price</th>
                     </tr>
-                </thead>
-                <tbody class="text-center">
+                    </thead>
+                    <tbody class="text-center">
                     <?php foreach ($data["order"] as $order) : ?>
                         <tr>
                             <td>
@@ -61,10 +61,10 @@
                             <td>￥ <?= number_format($order->price * $order->product_qty, -2) ?></td>
                         </tr>
                     <?php endforeach ?>
-                </tbody>
-            </table>
-        </div>
-    </main>
-</div>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
 
 <?php require APPROOT . "/views/default/footer.php"; ?>

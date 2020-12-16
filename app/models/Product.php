@@ -28,7 +28,7 @@ class Product
         return $this->db->single();
     }
 
-    public function cartProduct($id)
+    public function findCartProductsById($id)
     {
         $sql = "SELECT * FROM products WHERE id = :id";
         $this->db->query($sql);
@@ -81,7 +81,7 @@ class Product
         return $this->db->execute() ? true : false;
     }
 
-    // ADMIN    
+    // ADMIN
     public function destroyProduct($id)
     {
         $sql = "DELETE FROM products WHERE id = :id";

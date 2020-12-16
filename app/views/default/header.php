@@ -12,5 +12,5 @@
 </head>
 
 <body>
-    <?php require APPROOT . "/views/default/navbar.php"; ?>
-    <div class="container">
+<?php require APPROOT . "/views/default/navbar.php"; ?>
+<div class="container">

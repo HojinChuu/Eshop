@@ -170,7 +170,25 @@ class Users extends Controller
 
     public function moneyCharge($id)
     {
-        $this->userModel->charge($id, (int)$_POST["money"]);
+        $user_id = $_SESSION["user_id"];
+        $money = (int)$_POST["money"];
+
+        $user = $this->userModel->getUserById($user_id);
+
+        if ($user->money >= 2147483647) {
+            flash("money_error1", "持てるお金の範囲を外れました", "alert alert-danger");
+            redirect("users/mypage");
+            exit();
+        }
+
+        if ($money >=  2147483647) {
+            flash("money_error2", "お金入れすぎ！", "alert alert-danger");
+            redirect("users/mypage");
+            exit();
+        } else {
+            $this->userModel->charge($id, $_POST["money"]);
+        }
+
         $this->myPage();
     }
 

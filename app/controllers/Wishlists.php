@@ -5,6 +5,7 @@ class Wishlists extends Controller
     public function __construct()
     {
         $this->wishlistModel = $this->model("Wishlist");
+        $this->productModel = $this->model("Product");
     }
 
     public  function index()
@@ -22,7 +23,9 @@ class Wishlists extends Controller
         $product_id = $id;
 
         if ($this->wishlistModel->findById($user_id)) {
-            $this->wishlistModel->create($user_id, $product_id);
+            if ($this->productModel->getProductById($product_id)) {
+                $this->wishlistModel->create($user_id, $product_id);
+            }
         }
 
         $wishlist = $this->wishlistModel->getWishlist($user_id);

@@ -16,8 +16,8 @@ class Orders extends Controller
         if (isset($_SESSION["cart"]) && !empty($_SESSION["cart"])) {
             $cart_session = $_SESSION["cart"];
 
-            foreach ($cart_session as $key => $value) {
-                $cart[] = $this->productModel->cartProduct($key);
+            foreach ($cart_session as $id => $value) {
+                $cart[] = $this->productModel->findCartProductsById($id);
                 $quantity[] = $value;
             }
 
@@ -57,8 +57,8 @@ class Orders extends Controller
         // cart info
         $cart_session = $_SESSION["cart"];
 
-        foreach ($cart_session as $key => $value) {
-            $cart[] = $this->productModel->cartProduct($key);
+        foreach ($cart_session as $id => $value) {
+            $cart[] = $this->productModel->findCartProductsById($id);
             $quantity[] = $value;
         }
 
@@ -67,7 +67,7 @@ class Orders extends Controller
             $qty = $quantity[$key]["quantity"];
             $total = $total + ($qty * $cartItem->price);
 
-            // Cart Stock Check 
+            // Cart Stock Check
             if ($cartItem->stock < $qty) {
                 flash("stock_error", "[ $cartItem->name ] 希望する商品の数が残っている在庫の量より多いです。[ $cartItem->name ] の在庫 ( $cartItem->stock )", "alert alert-danger");
                 redirect("orders/index");
@@ -107,8 +107,8 @@ class Orders extends Controller
 
         // Cart Info
         $cart_session = $_SESSION["cart"];
-        foreach ($cart_session as $key => $value) {
-            $cart[] = $this->productModel->cartProduct($key);
+        foreach ($cart_session as $id => $value) {
+            $cart[] = $this->productModel->findCartProductsById($id);
             $quantity[] = $value;
         }
 
@@ -116,7 +116,7 @@ class Orders extends Controller
         foreach ($cart as $key => $cartItem) {
             $qty = $quantity[$key]["quantity"];
 
-            // Cart Stock Check 
+            // Cart Stock Check
             if ($cartItem->stock < $qty) {
                 flash("stock_error", "[ $cartItem->name ] 希望する商品の数が残っている在庫の量より多いです。[ $cartItem->name ] の在庫 ( $cartItem->stock )", "alert alert-danger");
                 redirect("orders/index");
@@ -169,8 +169,8 @@ class Orders extends Controller
 
                 // OrderItem Create
                 if (!empty($order_id)) {
-                    foreach ($cart as $key => $value) {
-                        $cart[] = $this->productModel->cartProduct($key);
+                    foreach ($cart as $id => $value) {
+                        $cart[] = $this->productModel->findCartProductsById($id);
                         $quantity[] = $value;
                         $productqty = $quantity[$key]["quantity"];
 

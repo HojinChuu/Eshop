@@ -30,8 +30,8 @@ class Products extends Controller
 
         $cart_session = $_SESSION["cart"];
 
-        foreach ($cart_session as $key => $value) {
-            $cart[] = $this->productModel->cartProduct($key);
+        foreach ($cart_session as $cart_id => $value) {
+            $cart[] = $this->productModel->findCartProductsById($cart_id);
             $quantity[] = $value;
         }
 
@@ -97,8 +97,8 @@ class Products extends Controller
             $stock = (int)$_POST["stock"];
 
             $data = [
-                "name" => trim($_POST["name"]),
-                "description" => trim($_POST["description"]),
+                "name" => htmlspecialchars(trim($_POST["name"])),
+                "description" => htmlspecialchars(trim($_POST["description"])),
                 "image" => $image_url,
                 "price" => $price,
                 "stock" => $stock,
@@ -159,8 +159,8 @@ class Products extends Controller
 
             $data = [
                 "id" => $id,
-                "name" => trim($_POST["name"]),
-                "description" => trim($_POST["description"]),
+                "name" => htmlspecialchars(trim($_POST["name"])),
+                "description" => htmlspecialchars(trim($_POST["description"])),
                 "image" => $image_url,
                 "price" => $price,
                 "stock" => $stock,
@@ -190,7 +190,11 @@ class Products extends Controller
     public function destroy($id)
     {
         $product = $this->productModel->getProductById($id);
-        unlink($product->image_path);
+
+        $image_text_array = explode("/", $product->image_path);
+        if ($image_text_array[0] == "upload") {
+            unlink($product->image_path);
+        }
 
         $this->productModel->destroyProduct($id);
         $products = $this->productModel->getProducts();
