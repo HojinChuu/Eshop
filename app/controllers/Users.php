@@ -6,105 +6,38 @@ class Users extends Controller
     {
         $this->userModel = $this->model("User");
         $this->orderModel = $this->model("Order");
+
+        $this->validation = $this->validate("Validate");
     }
 
     public function register()
     {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-            $data = [
-                "name" => trim($_POST["name"]),
-                "email" => trim($_POST["email"]),
-                "password" => trim($_POST["password"]),
-                "confirm_password" => trim($_POST["confirm_password"]),
-                "name_err" => "",
-                "email_err" => "",
-                "password_err" => "",
-                "confirm_password_err" => ""
-            ];
-
-            if (empty($data["email"])) {
-                $data["email_err"] = "メールをご記入ください";
-            } else {
-                if ($this->userModel->findUserByEmail($data["email"])) {
-                    $data["email_err"] = "もうメールアドレスが存在します";
-                }
-            }
-
-            if (empty($data["name"])) {
-                $data["name_err"] = "お名前をご記入ください";
-            }
-
-            if (empty($data["password"])) {
-                $data["password_err"] = "パスワードをご記入ください";
-            } else if (strlen($data["password"]) < 6) {
-                $data["password_err"] = "パスワードは6字以上にしてください";
-            }
-
-            if (empty($data["confirm_password"])) {
-                $data["confirm_password_err"] = "パスワード確認項目をご記入ください";
-            } else {
-                if ($data["password"] != $data["confirm_password"]) {
-                    $data["confirm_password_err"] = "パスワードが間違います";
-                }
-            }
+            $data = $this->validation->userRegisterCheck($_POST, $this->userModel);
 
             if (empty($data["email_err"]) && empty($data["name_err"]) && empty($data["password_err"]) && empty($data["confirm_password_err"])) {
-
                 $data["password"] = password_hash($data["password"], PASSWORD_DEFAULT);
-
                 if ($this->userModel->register($data)) {
                     flash("register_success", "register success");
                     redirect("users/login");
-                } else {
-                    die("Something wrong");
                 }
-            } else {
-                $this->view("users/register", $data);
             }
-        } else {
-            $data = [
-                "name" => "",
-                "email" => "",
-                "password" => "",
-                "confirm_password" => "",
-                "name_err" => "",
-                "email_err" => "",
-                "password_err" => "",
-                "confirm_password_err" => ""
-            ];
-
             $this->view("users/register", $data);
         }
+
+        $this->view("users/register");
     }
 
     public function login()
     {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-            $data = [
-                "email" => trim($_POST["email"]),
-                "password" => trim($_POST["password"]),
-                "email_err" => "",
-                "password_err" => "",
-            ];
-
-            if (empty($data["email"])) {
-                $data["email_err"] = "メールをご記入ください";
-            } else if (!$this->userModel->findUserByEmail($data["email"])) {
-                $data["email_err"] = "メールアドレスが存在しません";
-            }
-
-            if (empty($data["password"])) {
-                $data["password_err"] = "パスワードをご記入ください";
-            }
+            $data = $this->validation->userLoginCheck($_POST, $this->userModel);
 
             if (empty($data["email_err"]) && empty($data["password_err"])) {
-
                 $loggedInUser = $this->userModel->login($data["email"], $data["password"]);
 
                 if ($loggedInUser) {
@@ -115,19 +48,11 @@ class Users extends Controller
                     $data["password_err"] = "パスワードが間違います";
                     $this->view("users/login", $data);
                 }
-            } else {
-                $this->view("users/login", $data);
             }
-        } else {
-            $data = [
-                "email" => "",
-                "password" => "",
-                "email_err" => "",
-                "password_err" => ""
-            ];
-
             $this->view("users/login", $data);
         }
+
+        $this->view("users/login");
     }
 
     public function createUserSession($user)
@@ -165,6 +90,7 @@ class Users extends Controller
                 "orders" => $orders
             ];
         }
+
         $this->view("users/mypage", $data);
     }
 
@@ -198,87 +124,45 @@ class Users extends Controller
         $user = $this->userModel->getUserById($id);
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
-            $data = [
-                "id" => $user->id,
-                "name" => trim($_POST["name"]),
-                "password" => trim($_POST["password"]),
-                "confirm_password" => trim($_POST["confirm_password"]),
-                "name_err" => "",
-                "password_err" => "",
-                "confirm_password_err" => ""
-            ];
-
-            if (empty($data["name"])) {
-                $data["name_err"] = "お名前をご記入ください";
-            }
-
-            if (empty($data["password"])) {
-                $data["password_err"] = "パスワードをご記入ください";
-            } else if (strlen($data["password"]) < 6) {
-                $data["password_err"] = "パスワードは6字以上にしてください";
-            }
-
-            if (empty($data["confirm_password"])) {
-                $data["confirm_password_err"] = "パスワード確認項目をご記入ください";
-            } else {
-                if ($data["password"] != $data["confirm_password"]) {
-                    $data["confirm_password_err"] = "パスワードが間違います";
-                }
-            }
+            $data = $this->validation->userUpdateCheck($_POST, $user);
 
             if (empty($data["name_err"]) && empty($data["password_err"]) && empty($data["confirm_password_err"])) {
-
                 $data["password"] = password_hash($data["password"], PASSWORD_DEFAULT);
 
                 if ($this->userModel->update($data)) {
                     flash("update_success", "update success");
                     redirect("users/mypage");
-                } else {
-                    die("Something wrong");
                 }
-            } else {
-                $this->view("users/edit", $data);
             }
-        } else {
-            $data = [
-                "id" => $user->id,
-                "name" => $user->name,
-                "password" => "",
-                "confirm_password" => "",
-                "name_err" => "",
-                "password_err" => "",
-                "confirm_password_err" => ""
-            ];
-
             $this->view("users/edit", $data);
         }
+
+        $data = [
+            "id" => $user->id,
+            "name" => $user->name,
+        ];
+
+        $this->view("users/edit", $data);
     }
 
     // ADMIN Page Redirect
     public function admin()
     {
-        if (isAdminUser()) {
-            $this->view("admin/index");
-        } else {
+        isAdminUser() ?
+            $this->view("admin/index") :
             redirect("products/index");
-        }
     }
 
     // ADMIN User Management
     public function adminUserPage()
     {
         $users = $this->userModel->getUsers();
-
         $data = ["users" => $users];
 
-        if (isAdminUser()) {
-            $this->view("admin/userList", $data);
-        } else {
+        isAdminUser() ?
+            $this->view("admin/userList", $data) :
             redirect("products/index");
-        }
     }
 
     // ADMIN User Remove

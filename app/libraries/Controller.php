@@ -16,4 +16,10 @@ class Controller
             die("View does not exist");
         }
     }
+
+    public function validate($validate)
+    {
+        require_once "../app/functions/" . $validate . ".php";
+        return new $validate();
+    }
 }
