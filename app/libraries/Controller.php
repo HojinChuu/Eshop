@@ -19,7 +19,7 @@ class Controller
 
     public function validate($validate)
     {
-        require_once "../app/functions/" . $validate . ".php";
+        require_once "../app/validator/" . $validate . ".php";
         return new $validate();
     }
 }

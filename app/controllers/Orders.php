@@ -217,7 +217,6 @@ class Orders extends Controller
         $user_id = $_SESSION["user_id"];
 
         $order = $this->orderModel->getOrder($order_id);
-
         $result = $order->payment_mode == "Cash" ? true : false;
 
         if ($result) {

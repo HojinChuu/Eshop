@@ -6,7 +6,6 @@ class Users extends Controller
     {
         $this->userModel = $this->model("User");
         $this->orderModel = $this->model("Order");
-
         $this->validation = $this->validate("Validate");
     }
 

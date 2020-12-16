@@ -27,7 +27,6 @@ class Products extends Controller
     public function addToCart($id)
     {
         $_SESSION["cart"][$id] = ["quantity" => $_POST["quantity"]];
-
         $cart_session = $_SESSION["cart"];
 
         foreach ($cart_session as $cart_id => $value) {
@@ -50,11 +49,9 @@ class Products extends Controller
 
         $data = ["products" => $products];
 
-        if (isAdminUser()) {
-            $this->view("admin/productList", $data);
-        } else {
+        isAdminUser() ?
+            $this->view("admin/productList", $data) :
             redirect("products/index");
-        }
     }
 
     // ADMIN create product
@@ -62,53 +59,19 @@ class Products extends Controller
     {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_POST = filter_input_array(INPUT_POST);
-
-            $image_url = "";
-            if (isset($_FILES["image"]) && !empty($_FILES["image"])) {
-                $errors = array();
-                $file_name = $_FILES["image"]["name"];
-                $file_size = $_FILES["image"]["size"];
-                $file_tmp = $_FILES["image"]["tmp_name"];
-                $file_ext = strtolower((explode(".", $_FILES["image"]["name"])[1]));
-                $extensions = array("jpeg", "jpg", "png");
-
-                if (in_array($file_ext, $extensions) === false) {
-                    $errors[] = "extension not allowed, JPEG or PNG";
-                }
-
-                if ($file_size > 2097152) {
-                    $errors[] = "File size おおすぎ";
-                }
-
-                if (empty($errors) == true) {
-                    move_uploaded_file($file_tmp, "upload/" . $file_name);
-                } else {
-                    print_r($errors);
-                }
-
-                if ($file_name) {
-                    $image_url = "upload/" . $file_name;
-                } else {
-                    $image_url = "img/no_image.png";
-                }
-            }
-
-            $price = (int)$_POST["price"];
-            $stock = (int)$_POST["stock"];
+            $resultData = upload($_POST, $_FILES);
 
             $data = [
-                "name" => htmlspecialchars(trim($_POST["name"])),
-                "description" => htmlspecialchars(trim($_POST["description"])),
-                "image" => $image_url,
-                "price" => $price,
-                "stock" => $stock,
+                "name" => $resultData["name"],
+                "description" => $resultData["description"],
+                "image" => $resultData["image"],
+                "price" => $resultData["price"],
+                "stock" => $resultData["stock"],
             ];
 
             if ($this->productModel->createProduct($data)) {
                 flash("create_success", "create success");
                 redirect("admin/adminProductPage");
-            } else {
-                die("Something wrong");
             }
         } else {
             $this->view("admin/productCreateForm");
@@ -122,55 +85,20 @@ class Products extends Controller
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_POST = filter_input_array(INPUT_POST);
-
-            $image_url = "";
-            if (isset($_FILES["image"]) && !empty($_FILES["image"])) {
-                $errors = array();
-                $file_name = $_FILES["image"]["name"];
-                $file_size = $_FILES["image"]["size"];
-                $file_tmp = $_FILES["image"]["tmp_name"];
-                $file_ext = strtolower((explode('.', $_FILES["image"]["name"])[1]));
-                $extensions = array("jpeg", "jpg", "png");
-
-                if (in_array($file_ext, $extensions) === false) {
-                    $errors[] = "extension not allowed, JPEG or PNG";
-                }
-
-                if ($file_size > 2097152) {
-                    $errors[] = "File size おおすぎ";
-                }
-
-                if (empty($errors) == true) {
-                    move_uploaded_file($file_tmp, "upload/" . $file_name);
-                    unlink($product->image_path);
-                } else {
-                    print_r($errors);
-                }
-
-                if ($file_name) {
-                    $image_url = "upload/" . $file_name;
-                } else {
-                    $image_url = "img/no_image.png";
-                }
-            }
-
-            $price = (int)$_POST["price"];
-            $stock = (int)$_POST["stock"];
+            $resultData = upload($_POST, $_FILES, $product);
 
             $data = [
                 "id" => $id,
-                "name" => htmlspecialchars(trim($_POST["name"])),
-                "description" => htmlspecialchars(trim($_POST["description"])),
-                "image" => $image_url,
-                "price" => $price,
-                "stock" => $stock,
+                "name" => $resultData["name"],
+                "description" => $resultData["description"],
+                "image" => $resultData["image"],
+                "price" => $resultData["price"],
+                "stock" => $resultData["stock"],
             ];
 
             if ($this->productModel->updateProduct($data)) {
                 flash("update_success", "update success");
                 redirect("admin/adminProductPage");
-            } else {
-                die("Something went wrong");
             }
         } else {
             $data = [
