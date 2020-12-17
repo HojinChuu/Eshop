@@ -6,15 +6,17 @@ class Users extends Controller
     {
         $this->userModel = $this->model("User");
         $this->orderModel = $this->model("Order");
-        $this->validation = $this->validate("Validate");
+        $this->validator = $this->validate("Validate");
     }
 
     public function register()
     {
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if ($_SERVER["REQUEST_METHOD"] != "POST") {
+            $this->view("users/register");
+        } else {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-            $data = $this->validation->userRegisterCheck($_POST, $this->userModel);
+            $data = $this->validator->userRegisterCheck($_POST, $this->userModel);
 
             if (empty($data["email_err"]) && empty($data["name_err"]) && empty($data["password_err"]) && empty($data["confirm_password_err"])) {
                 $data["password"] = password_hash($data["password"], PASSWORD_DEFAULT);
@@ -25,16 +27,16 @@ class Users extends Controller
             }
             $this->view("users/register", $data);
         }
-
-        $this->view("users/register");
     }
 
     public function login()
     {
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if ($_SERVER["REQUEST_METHOD"] != "POST") {
+            $this->view("users/login");
+        } else {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-            $data = $this->validation->userLoginCheck($_POST, $this->userModel);
+            $data = $this->validator->userLoginCheck($_POST, $this->userModel);
 
             if (empty($data["email_err"]) && empty($data["password_err"])) {
                 $loggedInUser = $this->userModel->login($data["email"], $data["password"]);
@@ -50,8 +52,6 @@ class Users extends Controller
             }
             $this->view("users/login", $data);
         }
-
-        $this->view("users/login");
     }
 
     public function createUserSession($user)
@@ -106,7 +106,7 @@ class Users extends Controller
             exit();
         }
 
-        if ($money >=  2147483647) {
+        if ($money >= 2147483647) {
             flash("money_error2", "お金入れすぎ！", "alert alert-danger");
             redirect("users/mypage");
             exit();
@@ -122,9 +122,15 @@ class Users extends Controller
     {
         $user = $this->userModel->getUserById($id);
 
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if ($_SERVER["REQUEST_METHOD"] != "POST") {
+            $data = [
+                "id" => $user->id,
+                "name" => $user->name,
+            ];
+            $this->view("users/edit", $data);
+        } else {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-            $data = $this->validation->userUpdateCheck($_POST, $user);
+            $data = $this->validator->userUpdateCheck($_POST, $user);
 
             if (empty($data["name_err"]) && empty($data["password_err"]) && empty($data["confirm_password_err"])) {
                 $data["password"] = password_hash($data["password"], PASSWORD_DEFAULT);
@@ -136,13 +142,6 @@ class Users extends Controller
             }
             $this->view("users/edit", $data);
         }
-
-        $data = [
-            "id" => $user->id,
-            "name" => $user->name,
-        ];
-
-        $this->view("users/edit", $data);
     }
 
     // ADMIN Page Redirect
@@ -170,5 +169,11 @@ class Users extends Controller
         $this->userModel->deleteUser($id);
         flash("userDelete_success", "userDelete success");
         redirect("users/adminUserPage");
+    }
+
+    public function testApiCall()
+    {
+        $data = shopserveGetRequest("/service-setup/payment-method-groups");
+        var_dump($data);die();
     }
 }

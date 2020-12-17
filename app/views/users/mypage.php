@@ -9,6 +9,8 @@
                 </div>
             </div>
 
+            <a class="btn btn-dark" href="<?= URLROOT ?>/users/testApiCall">TEST_CALL</a>
+
             <div class="mt-4">
                 <?php flash("money_success") ?>
                 <?php flash("refund_success") ?>

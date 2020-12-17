@@ -251,4 +251,5 @@ class Orders extends Controller
         $this->orderModel->updateOrderStatus($id, $status);
         $this->adminOrderPage();
     }
+
 }

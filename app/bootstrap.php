@@ -7,6 +7,7 @@ require_once "helpers/session_helper.php";
 require_once "helpers/debug_helper.php";
 require_once "helpers/redirect_helper.php";
 require_once "helpers/upload_helper.php";
+require_once "helpers/request_helper.php";
 
 // Autoload lib
 spl_autoload_register(function ($className) {
