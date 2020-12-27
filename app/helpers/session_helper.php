@@ -2,6 +2,11 @@
 
 session_start();
 
+/**
+ * @param string $name
+ * @param string $message
+ * @param string $class
+ */
 function flash($name = "", $message = "", $class = "alert alert-success")
 {
     if (!empty($name)) {
@@ -28,11 +33,17 @@ function flash($name = "", $message = "", $class = "alert alert-success")
     }
 }
 
+/**
+ * @return bool
+ */
 function isLoggedIn()
 {
     return isset($_SESSION["user_id"]) ? true : false;
 }
 
+/**
+ * @return bool
+ */
 function isAdminUser()
 {
     return isset($_SESSION["user_isAdmin"]) ? true : false;

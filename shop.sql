@@ -66,3 +66,16 @@ FOREIGN KEY (product_id)
 REFERENCES products (id)
 ON DELETE CASCADE
 );
+
+CREATE TABLE logs (
+uu INT,
+pv INT,
+admin_page INT,
+products_page INT,
+users_page INT,
+wishlists_page INT,
+orders_page INT,
+order_count INT,
+product_ranking VARCHAR(255),
+date VARCHAR(255) UNIQUE KEY
+);

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Product Class with function of Product, Admin Product, Shopping Serve Product
+ */
 class Products extends Controller
 {
     public function __construct()
@@ -7,7 +10,10 @@ class Products extends Controller
         $this->productModel = $this->model("Product");
     }
 
-    // Product page
+    /**
+     * @return array $data[products]
+     * @todo Show Main Page (Product)
+     */
     public function index()
     {
         $products = $this->productModel->getProducts();
@@ -15,7 +21,11 @@ class Products extends Controller
         $this->view("products/index", $data);
     }
 
-    // Product Detail
+    /**
+     * @param int $id ( product_id )
+     * @return array $data[product]
+     * @todo Show product detail
+     */
     public function show($id)
     {
         $product = $this->productModel->getProductById($id);
@@ -23,7 +33,11 @@ class Products extends Controller
         $this->view("products/show", $data);
     }
 
-    // Add To Cart
+    /**
+     * @param int $id ( product_id )
+     * @return array $data[cart, quantity]
+     * @todo Create product in Cart and go to Cart Page
+     */
     public function addToCart($id)
     {
         $_SESSION["cart"][$id] = ["quantity" => $_POST["quantity"]];
@@ -42,19 +56,31 @@ class Products extends Controller
         $this->view("orders/index", $data);
     }
 
-    // ADMIN product management
+    /**
+     * @access Admin
+     * @return array $data[products, shop_products]
+     * @todo Show products and shopping serve products
+     */
     public function adminProductPage()
     {
         $products = $this->productModel->getProducts();
 
-        $data = ["products" => $products];
+        $shop_products = shopserveRequest("/items/_search", "POST");
+
+        $data = [
+            "products" => $products,
+            "shop_products" => $shop_products["data"]->contents
+        ];
 
         isAdminUser() ?
             $this->view("admin/productList", $data) :
             redirect("products/index");
     }
 
-    // ADMIN create product
+    /**
+     * @access Admin
+     * @todo Create a product
+     */
     public function create()
     {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -78,7 +104,11 @@ class Products extends Controller
         }
     }
 
-    // ADMIN update product
+    /**
+     * @access Admin
+     * @param int $id ( product_id )
+     * @todo Update a product
+     */
     public function update($id)
     {
         $product = $this->productModel->getProductById($id);
@@ -114,7 +144,11 @@ class Products extends Controller
         }
     }
 
-    // ADMIN remove product
+    /**
+     * @access Admin
+     * @param int $id ( product_id )
+     * @todo Remove a product
+     */
     public function destroy($id)
     {
         $product = $this->productModel->getProductById($id);
@@ -125,9 +159,86 @@ class Products extends Controller
         }
 
         $this->productModel->destroyProduct($id);
-        $products = $this->productModel->getProducts();
+        $this->adminProductPage();
+    }
 
-        $data = ["products" => $products];
-        $this->view("admin/productList", $data);
+    /**
+     * @access Admin
+     * @todo Create a shopping serve product
+     */
+    public function createShopServeProduct()
+    {
+        if ($_SERVER["REQUEST_METHOD"] != "POST") {
+            $this->view("admin/shop/createForm");
+        } else {
+            $_POST = filter_input_array(INPUT_POST);
+
+            $formData = [
+                "item_code" => $_POST["code"],
+                "item_name" => $_POST["name"],
+            ];
+
+            $body = json_encode($formData);
+            $result = shopserveRequest("/items", "PUT", $body);
+
+            if ($result["info"]["http_code"] === 201) {
+                sleep(5);
+                flash("shop_create_success", "shop product create success");
+            } else if ($result["info"]["http_code"] === 409) {
+                sleep(5);
+                flash("shop_create_fail", "Already exists", "alert alert-danger");
+            }
+
+            redirect("admin/adminProductPage");
+        }
+    }
+
+    /**
+     * @access Admin
+     * @param int $code ( shopping serve product code )
+     */
+    public function deleteShopServeProduct($code)
+    {
+        $result = shopserveRequest("/items/" . $code, "DELETE");
+
+        if ($result["info"]["http_code"] === 200) {
+            sleep(5);
+            flash("shop_delete_success", "shop product delete success");
+            redirect("admin/adminProductPage");
+        }
+    }
+
+    /**
+     * @access Admin
+     * @param int $code ( shopping serve product code )
+     */
+    public function updateShopServeProduct($code)
+    {
+        if (isset($_POST["basic"])) {
+            $postData = [
+                "item_name" => $_POST["name"],
+                "item_price" => $_POST["price"],
+            ];
+            $body = json_encode($postData);
+            shopserveRequest("/items/$code/basic", "PUT", $body);
+        } else if (isset($_POST["stock"])) {
+            $postData = [
+                "quantity" => $_POST["stock"],
+                "unlimited" => "No",
+                "alert_threshold" => 20
+            ];
+            $body = json_encode($postData);
+            shopserveRequest("/items/$code/stock", "PUT", $body);
+        }
+
+        $product = shopserveRequest("/items/$code/basic");
+        $stock = shopserveRequest("/items/$code/stock");
+
+        $data = [
+            "product" => $product["data"],
+            "stock" => $stock["data"]->stock->management_item->quantity
+        ];
+
+        $this->view("admin/shop/updateForm", $data);
     }
 }

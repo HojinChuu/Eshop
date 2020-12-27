@@ -9,6 +9,9 @@ class Users extends Controller
         $this->validator = $this->validate("Validate");
     }
 
+    /**
+     * @todo Validation Check and Register
+     */
     public function register()
     {
         if ($_SERVER["REQUEST_METHOD"] != "POST") {
@@ -29,6 +32,9 @@ class Users extends Controller
         }
     }
 
+    /**
+     * @todo Validation Check and Login
+     */
     public function login()
     {
         if ($_SERVER["REQUEST_METHOD"] != "POST") {
@@ -54,6 +60,9 @@ class Users extends Controller
         }
     }
 
+    /**
+     * @param object $user
+     */
     public function createUserSession($user)
     {
         $_SESSION["user_id"] = $user->id;
@@ -62,6 +71,9 @@ class Users extends Controller
         $_SESSION["user_isAdmin"] = $user->isAdmin;
     }
 
+    /**
+     * @todo Clear user session and go to Main page
+     */
     public function logout()
     {
         unset($_SESSION["user_id"]);
@@ -76,6 +88,9 @@ class Users extends Controller
         redirect("products/index");
     }
 
+    /**
+     * @return array $data[user, orders]
+     */
     public function myPage()
     {
         $user_id = $_SESSION["user_id"];
@@ -93,6 +108,9 @@ class Users extends Controller
         $this->view("users/mypage", $data);
     }
 
+    /**
+     * @param int $id ( user_id )
+     */
     public function moneyCharge($id)
     {
         $user_id = $_SESSION["user_id"];
@@ -117,7 +135,9 @@ class Users extends Controller
         $this->myPage();
     }
 
-    // User Update
+    /**
+     * @param int $id ( user_id )
+     */
     public function update($id)
     {
         $user = $this->userModel->getUserById($id);
@@ -144,7 +164,10 @@ class Users extends Controller
         }
     }
 
-    // ADMIN Page Redirect
+    /**
+     * @access Admin
+     * @todo show admin management page
+     */
     public function admin()
     {
         isAdminUser() ?
@@ -152,7 +175,10 @@ class Users extends Controller
             redirect("products/index");
     }
 
-    // ADMIN User Management
+    /**
+     * @access Admin
+     * @return array $data[users]
+     */
     public function adminUserPage()
     {
         $users = $this->userModel->getUsers();
@@ -163,17 +189,14 @@ class Users extends Controller
             redirect("products/index");
     }
 
-    // ADMIN User Remove
+    /**
+     * @access Admin
+     * @param int $id ( user_id )
+     */
     public function destroy($id)
     {
         $this->userModel->deleteUser($id);
         flash("userDelete_success", "userDelete success");
         redirect("users/adminUserPage");
-    }
-
-    public function testApiCall()
-    {
-        $data = shopserveGetRequest("/service-setup/payment-method-groups");
-        var_dump($data);die();
     }
 }

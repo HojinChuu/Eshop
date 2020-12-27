@@ -67,6 +67,18 @@ class Order
         $this->db->execute();
     }
 
+    public function getOrderItemsRanking()
+    {
+        $sql = "SELECT * FROM order_items 
+                LEFT JOIN products 
+                ON order_items.product_id = products.id
+                ORDER BY order_items.product_qty DESC";
+        $this->db->query($sql);
+        $this->db->execute();
+
+        return $this->db->resultSet();
+    }
+
     // ADMIN
     public function getOrder($id)
     {

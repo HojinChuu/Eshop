@@ -1,0 +1,88 @@
+# UBUNTU SETTING
+----------------
+1. ubuntu를 네트워크 iso 넣고 만들기
+2. sudo apt update
+3. sudo apt install lamp-server^
+4. sudo apt install openssh-server
+5. sudo apt install net-tools
+6. ifconfig
+7. sudo passwd root
+8. sudo mysql_secure_installation ( validate, disallow = n )
+9. sudo mysql
+10. Alter user “root”@“localhost” identified by ‘0410’
+11. Flush privileges
+12. Update user set plugin=“mysql_native_password” where user=“root”
+13. sudo mysql_secure_installation ( validate, disallow = n )
+14. sudo chmod o+w /var/www/html
+15. sudo apt install vim
+16. sudo vi /etc/apache2/sites-available/000-default.conf
+<Directory /var/www/html>
+    Options Indexes FollowSymLinks MultiViews
+    # changed from None to FileInfo
+    AllowOverride All
+    Order allow,deny
+    allow from all
+ </Directory>
+17. sudo systemctl restart apache2
+18. sudo a2enmod rewrite
+19. sudo apt install php-curl
+20. sudo systemctl restart apache2
+
+
+# PHPStorm SETTING
+------------------
+19. phpstorm deployment
+20. upload
+21. mysql shop 만들기
+
+
+# Upload Permission
+------------------
+22. sudo chmod o+w /var/www/html/public/img
+23. sudo chmod o+w /var/www/html/public/upload
+
+
+# Access log
+------------
+24. sudo chmod o+rx /var/log/apache2
+25. sudo chmod o+r /var/log/apache2/access.log
+
+
+# Mail Setting
+--------------
+26. sudo apt-get install mailutils (example.com)
+27. sudo vi /etc/postfix/main.cf
+
+relayhost = [smtp.gmail.com]:587
+mydestination = localhost.example.com, localhost
+inet_protocols = ipv4
+
+# Enables SASL authentication for postfix
+smtp_sasl_auth_enable = yes
+# Disallow methods that allow anonymous authentication
+smtp_sasl_security_options = noanonymous
+# Location of sasl_passwd we saved
+smtp_sasl_password_maps = hash:/etc/postfix/sasl/sasl_passwd
+# Enable STARTTLS encryption for SMTP
+smtp_tls_security_level = encrypt
+# Location of CA certificates for TLS
+smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+
+28. sudo vi /etc/postfix/sasl/sasl_passwd
+[smtp.gmail.com]:587 chu@estore.co.jp:az49600905!
+
+29. sudo postmap /etc/postfix/sasl/sasl_passwd
+30. sudo chown root:root /etc/postfix/sasl/sasl_passwd
+31. sudo chmod 600 /etc/postfix/sasl/sasl_passwd
+32. sudo systemctl restart postfix
+33. https://myaccount.google.com/lesssecureapps -> 여기에서 체크
+
+
+# Cron Setting
+
+
+
+
+
+
+

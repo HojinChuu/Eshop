@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @param string $data
+ */
 function dump($data)
 {
     highlight_string("<?php\n " . var_export($data, true) . "?>");

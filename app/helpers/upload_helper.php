@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @param $POST
+ * @param $FILES
+ * @param null $updateProduct
+ * @return array
+ */
 function upload($POST, $FILES, $updateProduct = null)
 {
     $image_url = "";

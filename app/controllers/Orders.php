@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Order Class with function of Cart, Order, Admin Order
+ */
 class Orders extends Controller
 {
     public function __construct()
@@ -10,7 +13,10 @@ class Orders extends Controller
         $this->userModel = $this->model("User");
     }
 
-    // Cart List
+    /**
+     * @return  array $data[cart, quantity]
+     * @todo Show Cart Page
+     */
     public function index()
     {
         if (isset($_SESSION["cart"]) && !empty($_SESSION["cart"])) {
@@ -31,7 +37,10 @@ class Orders extends Controller
         $this->view("orders/index");
     }
 
-    // Cart Destroy
+    /**
+     * @param int $id ( product_id )
+     * @todo Clear cart session and go to index page
+     */
     public function destroy($id)
     {
         unset($_SESSION["cart"][$id]);
@@ -39,14 +48,20 @@ class Orders extends Controller
         $this->index();
     }
 
-    // Cart Update
+    /**
+     * @param int $id ( product_id )
+     * @todo Update cart quantity
+     */
     public function update($id)
     {
         $_SESSION["cart"][$id]["quantity"] = $_POST["quantity"];
         $this->index();
     }
 
-    // Order CheckOut
+    /**
+     * @return array $data[total_price]
+     * @todo Show CheckOut Page
+     */
     public function checkout()
     {
         if (!isLoggedIn()) {
@@ -78,7 +93,9 @@ class Orders extends Controller
         $this->view("orders/checkout", $data);
     }
 
-    // Order Payment
+    /**
+     * @todo If successful, Clear cart session and save to order in db
+     */
     public function payment()
     {
         if (!isLoggedIn()) {
@@ -169,8 +186,8 @@ class Orders extends Controller
 
                 // OrderItem Create
                 if (!empty($order_id)) {
-                    foreach ($cart as $id => $value) {
-                        $cart[] = $this->productModel->findCartProductsById($id);
+                    foreach ($cart as $key => $value) {
+                        $cart[] = $this->productModel->findCartProductsById($value->id);
                         $quantity[] = $value;
                         $productqty = $quantity[$key]["quantity"];
 
@@ -194,7 +211,11 @@ class Orders extends Controller
         $this->view("orders/checkout", $data);
     }
 
-    // Show My Order List
+    /**
+     * @param int $id ( order_id )
+     * @return array $data[order, userinfo]
+     * @todo Show order detail
+     */
     public function orderShow($id)
     {
         $user_id = $_SESSION["user_id"];
@@ -209,7 +230,9 @@ class Orders extends Controller
         $this->view("users/myorder", $data);
     }
 
-    // Cancel My Order
+    /**
+     * @param mixed ...$data ( order_id, price )
+     */
     public function orderCancel(...$data)
     {
         $order_id = $data[0];
@@ -229,7 +252,10 @@ class Orders extends Controller
         redirect("users/mypage");
     }
 
-    // ADMIN OrderList
+    /**
+     * @access Admin
+     * @return array $data[order]
+     */
     public function adminOrderPage()
     {
         $orders = $this->orderModel->getAllOrders();
@@ -237,19 +263,24 @@ class Orders extends Controller
         $this->view("admin/orderList", $data);
     }
 
-    // ADMIN Remove Order
+    /**
+     * @access Admin
+     * @param int $id ( order_id )
+     */
     public function orderDestroy($id)
     {
         $this->orderModel->destroyOrder($id);
         $this->adminOrderPage();
     }
 
-    // ADMIN Update Order Status
+    /**
+     * @access Admin
+     * @param int $id ( order_id )
+     */
     public function orderStatusUpdate($id)
     {
         $status = $_POST["status"];
         $this->orderModel->updateOrderStatus($id, $status);
         $this->adminOrderPage();
     }
-
 }

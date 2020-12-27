@@ -28,6 +28,16 @@ class Product
         return $this->db->single();
     }
 
+    public function getProductByName($name)
+    {
+        $sql = "SELECT * FROM products WHERE name = :name";
+        $this->db->query($sql);
+        $this->db->bind(":name", $name);
+        $this->db->execute();
+
+        return $this->db->single();
+    }
+
     public function findCartProductsById($id)
     {
         $sql = "SELECT * FROM products WHERE id = :id";
