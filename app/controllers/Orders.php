@@ -1,8 +1,5 @@
 <?php
 
-/**
- * Order Class with function of Cart, Order, Admin Order
- */
 class Orders extends Controller
 {
     public function __construct()
@@ -13,10 +10,6 @@ class Orders extends Controller
         $this->userModel = $this->model("User");
     }
 
-    /**
-     * @return  array $data[cart, quantity]
-     * @todo Show Cart Page
-     */
     public function index()
     {
         if (isset($_SESSION["cart"]) && !empty($_SESSION["cart"])) {
@@ -38,8 +31,7 @@ class Orders extends Controller
     }
 
     /**
-     * @param int $id ( product_id )
-     * @todo Clear cart session and go to index page
+     * @param $id
      */
     public function destroy($id)
     {
@@ -49,8 +41,7 @@ class Orders extends Controller
     }
 
     /**
-     * @param int $id ( product_id )
-     * @todo Update cart quantity
+     * @param $id
      */
     public function update($id)
     {
@@ -58,10 +49,6 @@ class Orders extends Controller
         $this->index();
     }
 
-    /**
-     * @return array $data[total_price]
-     * @todo Show CheckOut Page
-     */
     public function checkout()
     {
         if (!isLoggedIn()) {
@@ -93,9 +80,6 @@ class Orders extends Controller
         $this->view("orders/checkout", $data);
     }
 
-    /**
-     * @todo If successful, Clear cart session and save to order in db
-     */
     public function payment()
     {
         if (!isLoggedIn()) {
@@ -212,9 +196,7 @@ class Orders extends Controller
     }
 
     /**
-     * @param int $id ( order_id )
-     * @return array $data[order, userinfo]
-     * @todo Show order detail
+     * @param $id
      */
     public function orderShow($id)
     {
@@ -231,7 +213,7 @@ class Orders extends Controller
     }
 
     /**
-     * @param mixed ...$data ( order_id, price )
+     * @param mixed ...$data
      */
     public function orderCancel(...$data)
     {
@@ -252,10 +234,6 @@ class Orders extends Controller
         redirect("users/mypage");
     }
 
-    /**
-     * @access Admin
-     * @return array $data[order]
-     */
     public function adminOrderPage()
     {
         $orders = $this->orderModel->getAllOrders();
@@ -264,8 +242,7 @@ class Orders extends Controller
     }
 
     /**
-     * @access Admin
-     * @param int $id ( order_id )
+     * @param $id
      */
     public function orderDestroy($id)
     {
@@ -274,8 +251,7 @@ class Orders extends Controller
     }
 
     /**
-     * @access Admin
-     * @param int $id ( order_id )
+     * @param $id
      */
     public function orderStatusUpdate($id)
     {

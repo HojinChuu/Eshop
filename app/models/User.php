@@ -9,6 +9,10 @@ class User
         $this->db = new Database();
     }
 
+    /**
+     * @param $data
+     * @return bool
+     */
     public function register($data)
     {
         $sql = "INSERT INTO users (name, email, password) 
@@ -21,6 +25,11 @@ class User
         return $this->db->execute() ? true : false;
     }
 
+    /**
+     * @param $email
+     * @param $password
+     * @return bool|mixed
+     */
     public function login($email, $password)
     {
         $sql = "SELECT * FROM users WHERE email = :email";
@@ -34,6 +43,10 @@ class User
         return password_verify($password, $hashed_password) ? $row : false;
     }
 
+    /**
+     * @param $email
+     * @return bool
+     */
     public function findUserByEmail($email)
     {
         $sql = "SELECT * FROM users WHERE email = :email";
@@ -44,6 +57,10 @@ class User
         return $this->db->rowCount() > 0 ? true : false;
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function getUserById($id)
     {
         $sql = "SELECT * FROM users WHERE id = :id";
@@ -54,6 +71,10 @@ class User
         return $this->db->single();
     }
 
+    /**
+     * @param $data
+     * @return bool
+     */
     public function update($data)
     {
         $sql = "UPDATE users SET name = :name, password = :password WHERE id = :id";
@@ -65,6 +86,11 @@ class User
         return $this->db->execute() ? true : false;
     }
 
+    /**
+     * @param $id
+     * @param $money
+     * @return bool
+     */
     public function charge($id, $money)
     {
         $sql = "UPDATE users SET money = money + :money WHERE id = :id";
@@ -75,6 +101,11 @@ class User
         return $this->db->execute() ? true : false;
     }
 
+    /**
+     * @param $id
+     * @param $money
+     * @return bool
+     */
     public function updateMoney($id, $money)
     {
         $sql = "UPDATE users SET money = :money WHERE id = :id";
@@ -85,6 +116,11 @@ class User
         return $this->db->execute() ? true : false;
     }
 
+    /**
+     * @param $user_id
+     * @param $price
+     * @return bool
+     */
     public function refundMoney($user_id, $price)
     {
         $sql = "UPDATE users SET money = money + :price WHERE id = :id";
@@ -95,7 +131,9 @@ class User
         return $this->db->execute() ? true : false;
     }
 
-    // ADMIN
+    /**
+     * @return mixed
+     */
     public function getUsers()
     {
         $sql = "SELECT * FROM users";
@@ -105,7 +143,9 @@ class User
         return $this->db->resultSet();
     }
 
-    // ADMIN
+    /**
+     * @param $id
+     */
     public function deleteUser($id)
     {
         $sql = "DELETE FROM users WHERE id = :id";

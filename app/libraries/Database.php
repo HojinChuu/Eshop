@@ -25,11 +25,19 @@ class Database
         }
     }
 
+    /**
+     * @param $sql
+     */
     public function query($sql)
     {
         $this->stmt = $this->dbh->prepare($sql);
     }
 
+    /**
+     * @param $param
+     * @param $value
+     * @param null $type
+     */
     public function bind($param, $value, $type = null)
     {
         if (is_null($type)) {
@@ -50,31 +58,41 @@ class Database
         $this->stmt->bindValue($param, $value, $type);
     }
 
-    // Execute
+    /**
+     * @return mixed
+     */
     public function execute()
     {
         return $this->stmt->execute();
     }
 
-    // Get result all
+    /**
+     * @return mixed
+     */
     public function resultSet()
     {
         return $this->stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
-    // Get single
+    /**
+     * @return mixed
+     */
     public function single()
     {
         return $this->stmt->fetch(PDO::FETCH_OBJ);
     }
 
-    // Get row count
+    /**
+     * @return mixed
+     */
     public function rowCount()
     {
         return $this->stmt->rowCount();
     }
 
-    // Get last insert id
+    /**
+     * @return string
+     */
     public function lastInsertId()
     {
         return $this->dbh->lastInsertId();

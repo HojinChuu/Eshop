@@ -8,10 +8,6 @@ class Wishlists extends Controller
         $this->productModel = $this->model("Product");
     }
 
-    /**
-     * @return array $data[wishlist]
-     * @todo Show my wishlist
-     */
     public function index()
     {
         $user_id = $_SESSION["user_id"];
@@ -22,8 +18,7 @@ class Wishlists extends Controller
     }
 
     /**
-     * @param int $id ( product_id )
-     * @return array $data[wishlist]
+     * @param $id
      */
     public function addToList($id)
     {
@@ -43,7 +38,7 @@ class Wishlists extends Controller
     }
 
     /**
-     * @param int $id ( wishlist_id )
+     * @param $id
      */
     public function destroy($id)
     {

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @param string $data
+ * @param $data
  */
 function dump($data)
 {

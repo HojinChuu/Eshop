@@ -2,6 +2,11 @@
 
 class Validate
 {
+    /**
+     * @param $postData
+     * @param $userModel
+     * @return array
+     */
     public function userRegisterCheck($postData, $userModel)
     {
         $data = [
@@ -44,6 +49,11 @@ class Validate
         return $data;
     }
 
+    /**
+     * @param $postData
+     * @param $userModel
+     * @return array
+     */
     public function userLoginCheck($postData, $userModel)
     {
         $data = [
@@ -66,6 +76,11 @@ class Validate
         return $data;
     }
 
+    /**
+     * @param $postData
+     * @param $user
+     * @return array
+     */
     public function userUpdateCheck($postData, $user)
     {
         $data = [

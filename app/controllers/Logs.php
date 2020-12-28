@@ -14,8 +14,10 @@ class Logs extends Controller
     {
         $data = $this->getData();
 
-        foreach ($data["product_ranking"] as $product) {
-            $data["products_info"][] = $this->productModel->getProductByName($product);
+        if (isset($data["product_ranking"][0]) && !empty($data["product_ranking"][0])) {
+            foreach ($data["product_ranking"] as $product) {
+                $data["products_info"][] = $this->productModel->getProductByName($product);
+            }
         }
 
         isAdminUser() ?
@@ -28,9 +30,11 @@ class Logs extends Controller
         $data = $this->getData();
         sendToMail($data);
         $this->adminLogPage();
-        exit();
     }
 
+    /**
+     * @return bool
+     */
     public function inputData()
     {
         $user_ip = [];
@@ -43,9 +47,16 @@ class Logs extends Controller
         exec(ACCESS_ROOT . URL . RULE, $url);
         exec(ACCESS_ROOT . TIME . RULE, $access_time);
 
-        foreach ($user_ip as $ip) {
+        // uu
+        foreach ($user_ip as $key => $ip) {
             $ip_result[] = explode(" ", trim($ip));
         }
+        foreach ($ip_result as $key => $ip) {
+            if (strpos($ip[1], "::")) {
+                unset($ip_result[$key]);
+            }
+        }
+        $access_user_count = count($ip_result);
 
         // init page count
         $admin_page_count = 0;
@@ -75,13 +86,7 @@ class Logs extends Controller
             }
         }
 
-        // 1. 오늘 사이트에 들어온 총인원수 (UU)
-        $access_user_count = count($ip_result);
-
-        // 2. 페이지를 새로고친 총수 (PV)
-        $access_all_page = $count;
-
-        // 4. 페이지별 접속수
+        // page
         $access_page_count = [
             "admin_page" => $admin_page_count,
             "products_page" => $products_page_count,
@@ -90,7 +95,10 @@ class Logs extends Controller
             "orders_page" => $orders_page_count,
         ];
 
-        // 6. 상품 랭킹 top 5
+        // pv
+        $access_all_page = $count;
+
+        // ranking
         $order_items = $this->orderModel->getOrderItemsRanking();
 
         $popular_product_ranking = [];
@@ -101,14 +109,14 @@ class Logs extends Controller
         }
         $product_ranking = implode(",", $popular_product_ranking);
 
-        // 3. 날짜
+        // date
         $time_result = explode(" ", trim($access_time[0]));
         $date_result = substr($time_result[1], 1, 11);
         $date_result = strtr($date_result, '/', '-');
         $date_result = strtotime($date_result);
         $access_date = date('Y-m-d', $date_result);
 
-        // 7. 오늘 주문수
+        // order count
         $order_count = 0;
         $orders = $this->orderModel->getAllOrders();
         foreach ($orders as $order) {
@@ -127,13 +135,17 @@ class Logs extends Controller
             "order_count" => $order_count,
         ];
 
-        return $this->logModel->create($data) ? true : false;
+        if ($this->logModel->create($data)) {
+            $this->mailBtn();
+        }
     }
 
+    /**
+     * @return array
+     */
     private function getData()
     {
-        $yesterday = date('Y-m-d', $_SERVER['REQUEST_TIME']);
-        // $yesterday = date('Y-m-d', $_SERVER['REQUEST_TIME']-86400);
+        $yesterday = date('Y-m-d', $_SERVER['REQUEST_TIME'] - 86400);
 
         $logs = $this->logModel->getLogs();
         $log = $this->logModel->getLog($yesterday);

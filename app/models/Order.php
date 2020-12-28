@@ -9,6 +9,11 @@ class Order
         $this->db = new Database();
     }
 
+    /**
+     * @param $user_id
+     * @param $orderData
+     * @return string
+     */
     public function create($user_id, $orderData)
     {
         $sql = "INSERT INTO orders (user_id, total_price, order_status, payment_mode)
@@ -23,6 +28,10 @@ class Order
         return $this->db->lastInsertId();
     }
 
+    /**
+     * @param $orderItemData
+     * @return bool
+     */
     public function orderItemCreate($orderItemData)
     {
         $sql = "INSERT INTO order_items (product_id, order_id, product_price, product_qty) 
@@ -36,6 +45,10 @@ class Order
         return $this->db->execute() ? true : false;
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function getOrders($id)
     {
         $sql = "SELECT * FROM orders WHERE user_id = :user_id";
@@ -46,6 +59,10 @@ class Order
         return $this->db->resultSet();
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function getOrderItem($id)
     {
         $sql = "SELECT * FROM order_items 
@@ -59,6 +76,9 @@ class Order
         return $this->db->resultSet();
     }
 
+    /**
+     * @param $id
+     */
     public function destroyOrder($id)
     {
         $sql = "DELETE FROM orders WHERE id = :id";
@@ -67,6 +87,9 @@ class Order
         $this->db->execute();
     }
 
+    /**
+     * @return mixed
+     */
     public function getOrderItemsRanking()
     {
         $sql = "SELECT * FROM order_items 
@@ -79,7 +102,10 @@ class Order
         return $this->db->resultSet();
     }
 
-    // ADMIN
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function getOrder($id)
     {
         $sql = "SELECT * FROM orders WHERE id = :id";
@@ -90,7 +116,9 @@ class Order
         return $this->db->single();
     }
 
-    // ADMIN
+    /**
+     * @return mixed
+     */
     public function getAllOrders()
     {
         $sql = "SELECT orders.id, orders.total_price, orders.order_status, user_info.phone,
@@ -105,7 +133,11 @@ class Order
         return $this->db->resultSet();
     }
 
-    // ADMIN
+    /**
+     * @param $id
+     * @param $status
+     * @return bool
+     */
     public function updateOrderStatus($id, $status)
     {
         $sql = "UPDATE orders SET order_status = :order_status WHERE id = :id";

@@ -1,9 +1,9 @@
 <?php require APPROOT . "/views/default/header.php"; ?>
 
-    <div class="row mt-5">
-        <a href="<?= URLROOT ?>/" class="btn btn btn-dark mb-4 mr-4">BACK</a>
-        <h1>Cart</h1>
-    </div>
+<div class="row mt-5">
+    <a href="<?= URLROOT ?>/" class="btn btn btn-dark mb-4 mr-4">BACK</a>
+    <h1>Cart</h1>
+</div>
 
 <?php if (isset($data["cart"]) && count($data["cart"]) !== 0) : ?>
 

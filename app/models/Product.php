@@ -9,6 +9,9 @@ class Product
         $this->db = new Database();
     }
 
+    /**
+     * @return mixed
+     */
     public function getProducts()
     {
         $sql = "SELECT * FROM products";
@@ -18,6 +21,10 @@ class Product
         return $this->db->resultSet();
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function getProductById($id)
     {
         $sql = "SELECT * FROM products WHERE id = :id";
@@ -28,6 +35,10 @@ class Product
         return $this->db->single();
     }
 
+    /**
+     * @param $name
+     * @return mixed
+     */
     public function getProductByName($name)
     {
         $sql = "SELECT * FROM products WHERE name = :name";
@@ -38,6 +49,10 @@ class Product
         return $this->db->single();
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function findCartProductsById($id)
     {
         $sql = "SELECT * FROM products WHERE id = :id";
@@ -48,6 +63,11 @@ class Product
         return $this->db->single();
     }
 
+    /**
+     * @param $id
+     * @param $stock
+     * @return bool
+     */
     public function updateStock($id, $stock)
     {
         $sql = "UPDATE products SET stock = :stock WHERE id = :id";
@@ -58,7 +78,10 @@ class Product
         return $this->db->execute() ? true : false;
     }
 
-    // ADMIN
+    /**
+     * @param $data
+     * @return bool
+     */
     public function createProduct($data)
     {
         $sql = "INSERT INTO products (name, description, image_path, price, stock) 
@@ -73,7 +96,10 @@ class Product
         return $this->db->execute() ? true : false;
     }
 
-    // ADMIN
+    /**
+     * @param $data
+     * @return bool
+     */
     public function updateProduct($data)
     {
         $sql = "UPDATE products 
@@ -91,7 +117,10 @@ class Product
         return $this->db->execute() ? true : false;
     }
 
-    // ADMIN
+    /**
+     * @param $id
+     * @return bool
+     */
     public function destroyProduct($id)
     {
         $sql = "DELETE FROM products WHERE id = :id";

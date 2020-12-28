@@ -2,7 +2,7 @@
 
     <h1>Logs</h1>
     <form action="<?= URLROOT ?>/logs/mailBtn" method="get" class="text-right">
-        <input type="submit" class="btn btn-dark btn-lg" value="Send Mail"/>
+        <input type="submit" class="btn btn-dark btn-lg" value="Send Mail" />
     </form>
     <div class="p-3">
         <table class="table table-bordered text-center">
@@ -60,20 +60,25 @@
         </div>
     </div>
 
-    <div>
+    <div class="mb-5 pb-5">
         <h3 class="mt-4">Ranking</h3>
-        <div class="row justify-content-between no-gutters mt-4">
-            <?php foreach ($data["products_info"] as $key => $product) : ?>
-                <h2><?= $key + 1 ?></h2>
-                <div class="col-2 card">
-                    <img class="card-img-top" src="<?= URLROOT . "/" . $product->image_path ?>" width="100"
-                         height="150"/>
-                    <div class="card-body">
-                        <p class="card-text"><?= $product->name ?></p>
-                        <p class="card-text">￥ <?= number_format($product->price, -2) ?></p>
+        <?php if (!empty($data["products_info"])) : ?>
+            <div class="row justify-content-between no-gutters mt-4">
+                <?php foreach ($data["products_info"] as $key => $product) : ?>
+                    <h2><?= $key + 1 ?></h2>
+                    <div class="col-2 card">
+                        <img class="card-img-top" src="<?= URLROOT . "/" . $product->image_path ?>" width="100"
+                             height="150" />
+                        <div class="card-body">
+                            <p class="card-text"><?= $product->name ?></p>
+                            <p class="card-text">￥ <?= number_format($product->price, -2) ?></p>
+                        </div>
                     </div>
-                </div>
-            <?php endforeach ?>
-        </div>
+                <?php endforeach ?>
+            </div>
+        <?php else : ?>
+            <p>Nothing...</p>
+        <?php endif ?>
     </div>
+
 <?php require APPROOT . "/views/default/footer.php"; ?>

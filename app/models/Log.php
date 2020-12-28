@@ -9,6 +9,10 @@ class Log
         $this->db = new Database();
     }
 
+    /**
+     * @param $data
+     * @return bool
+     */
     public function create($data)
     {
         $sql = "INSERT INTO logs (uu, pv, admin_page, products_page, users_page, wishlists_page, orders_page, order_count, product_ranking, date) 
@@ -28,6 +32,9 @@ class Log
         return $this->db->execute() ? true : false;
     }
 
+    /**
+     * @return mixed
+     */
     public function getLogs()
     {
         $sql = "SELECT SUM(uu) as all_uu, SUM(pv) as all_pv, 
@@ -44,6 +51,10 @@ class Log
         return $this->db->single();
     }
 
+    /**
+     * @param $yesterday
+     * @return mixed
+     */
     public function getLog($yesterday)
     {
         $sql = "SELECT * FROM logs WHERE date = :date";

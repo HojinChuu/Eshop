@@ -9,9 +9,6 @@ class Users extends Controller
         $this->validator = $this->validate("Validate");
     }
 
-    /**
-     * @todo Validation Check and Register
-     */
     public function register()
     {
         if ($_SERVER["REQUEST_METHOD"] != "POST") {
@@ -32,9 +29,6 @@ class Users extends Controller
         }
     }
 
-    /**
-     * @todo Validation Check and Login
-     */
     public function login()
     {
         if ($_SERVER["REQUEST_METHOD"] != "POST") {
@@ -61,7 +55,7 @@ class Users extends Controller
     }
 
     /**
-     * @param object $user
+     * @param $user
      */
     public function createUserSession($user)
     {
@@ -71,9 +65,6 @@ class Users extends Controller
         $_SESSION["user_isAdmin"] = $user->isAdmin;
     }
 
-    /**
-     * @todo Clear user session and go to Main page
-     */
     public function logout()
     {
         unset($_SESSION["user_id"]);
@@ -88,9 +79,6 @@ class Users extends Controller
         redirect("products/index");
     }
 
-    /**
-     * @return array $data[user, orders]
-     */
     public function myPage()
     {
         $user_id = $_SESSION["user_id"];
@@ -109,7 +97,7 @@ class Users extends Controller
     }
 
     /**
-     * @param int $id ( user_id )
+     * @param $id
      */
     public function moneyCharge($id)
     {
@@ -136,7 +124,7 @@ class Users extends Controller
     }
 
     /**
-     * @param int $id ( user_id )
+     * @param $id
      */
     public function update($id)
     {
@@ -164,10 +152,6 @@ class Users extends Controller
         }
     }
 
-    /**
-     * @access Admin
-     * @todo show admin management page
-     */
     public function admin()
     {
         isAdminUser() ?
@@ -175,10 +159,6 @@ class Users extends Controller
             redirect("products/index");
     }
 
-    /**
-     * @access Admin
-     * @return array $data[users]
-     */
     public function adminUserPage()
     {
         $users = $this->userModel->getUsers();
@@ -190,8 +170,7 @@ class Users extends Controller
     }
 
     /**
-     * @access Admin
-     * @param int $id ( user_id )
+     * @param $id
      */
     public function destroy($id)
     {

@@ -1,8 +1,5 @@
 <?php
 
-/**
- * Product Class with function of Product, Admin Product, Shopping Serve Product
- */
 class Products extends Controller
 {
     public function __construct()
@@ -10,10 +7,6 @@ class Products extends Controller
         $this->productModel = $this->model("Product");
     }
 
-    /**
-     * @return array $data[products]
-     * @todo Show Main Page (Product)
-     */
     public function index()
     {
         $products = $this->productModel->getProducts();
@@ -22,9 +15,7 @@ class Products extends Controller
     }
 
     /**
-     * @param int $id ( product_id )
-     * @return array $data[product]
-     * @todo Show product detail
+     * @param $id
      */
     public function show($id)
     {
@@ -34,9 +25,7 @@ class Products extends Controller
     }
 
     /**
-     * @param int $id ( product_id )
-     * @return array $data[cart, quantity]
-     * @todo Create product in Cart and go to Cart Page
+     * @param $id
      */
     public function addToCart($id)
     {
@@ -56,11 +45,6 @@ class Products extends Controller
         $this->view("orders/index", $data);
     }
 
-    /**
-     * @access Admin
-     * @return array $data[products, shop_products]
-     * @todo Show products and shopping serve products
-     */
     public function adminProductPage()
     {
         $products = $this->productModel->getProducts();
@@ -77,10 +61,6 @@ class Products extends Controller
             redirect("products/index");
     }
 
-    /**
-     * @access Admin
-     * @todo Create a product
-     */
     public function create()
     {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -105,9 +85,7 @@ class Products extends Controller
     }
 
     /**
-     * @access Admin
-     * @param int $id ( product_id )
-     * @todo Update a product
+     * @param $id
      */
     public function update($id)
     {
@@ -145,9 +123,7 @@ class Products extends Controller
     }
 
     /**
-     * @access Admin
-     * @param int $id ( product_id )
-     * @todo Remove a product
+     * @param $id
      */
     public function destroy($id)
     {
@@ -162,10 +138,6 @@ class Products extends Controller
         $this->adminProductPage();
     }
 
-    /**
-     * @access Admin
-     * @todo Create a shopping serve product
-     */
     public function createShopServeProduct()
     {
         if ($_SERVER["REQUEST_METHOD"] != "POST") {
@@ -194,8 +166,7 @@ class Products extends Controller
     }
 
     /**
-     * @access Admin
-     * @param int $code ( shopping serve product code )
+     * @param $code
      */
     public function deleteShopServeProduct($code)
     {
@@ -209,8 +180,7 @@ class Products extends Controller
     }
 
     /**
-     * @access Admin
-     * @param int $code ( shopping serve product code )
+     * @param $code
      */
     public function updateShopServeProduct($code)
     {

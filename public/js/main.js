@@ -48,4 +48,3 @@ new Chart(pageChart, {
         }]
     }
 });
-

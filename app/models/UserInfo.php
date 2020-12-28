@@ -9,6 +9,10 @@ class UserInfo
         $this->db = new Database();
     }
 
+    /**
+     * @param $user_id
+     * @return mixed
+     */
     public function getUserInfo($user_id)
     {
         $sql = "SELECT * FROM user_info WHERE user_id = $user_id";
@@ -19,6 +23,11 @@ class UserInfo
         return $this->db->single();
     }
 
+    /**
+     * @param $user_id
+     * @param $order_id
+     * @return mixed
+     */
     public function getOrderUserInfo($user_id, $order_id)
     {
         $sql = "SELECT * FROM user_info WHERE user_id = :user_id AND order_id = :order_id";
@@ -30,6 +39,10 @@ class UserInfo
         return $this->db->single();
     }
 
+    /**
+     * @param $user_id
+     * @return mixed
+     */
     public function userInfoCount($user_id)
     {
         $sql = "SELECT * FROM user_info WHERE user_id = $user_id";
@@ -40,6 +53,12 @@ class UserInfo
         return $this->db->rowCount();
     }
 
+    /**
+     * @param $user_id
+     * @param $postData
+     * @param $order_id
+     * @return bool
+     */
     public function create($user_id, $postData, $order_id)
     {
         $sql = "INSERT INTO user_info (country, firstname, lastname, address1, address2, state, company, phone, city, zip, user_id, order_id)
@@ -61,6 +80,12 @@ class UserInfo
         return $this->db->execute() ? true : false;
     }
 
+    /**
+     * @param $user_id
+     * @param $postData
+     * @param $order_id
+     * @return bool
+     */
     public function update($user_id, $postData, $order_id)
     {
         $sql = "UPDATE user_info 

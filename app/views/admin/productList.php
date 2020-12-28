@@ -27,7 +27,6 @@
 
             <thead class="thead-light text-center">
             <th>CodeNumber</th>
-            <th>Image</th>
             <th>Name</th>
             <th>Price</th>
             <th>Stock</th>
@@ -38,7 +37,6 @@
             <?php foreach ($data["shop_products"] as $shopProduct) : ?>
                 <tr class="text-center">
                     <td> <?= $shopProduct->item_code ?> </td>
-                    <td> NoImage </td>
                     <td><?= $shopProduct->item_name ?> </td>
                     <td>￥ <?= number_format($shopProduct->item_price, -2) ?> </td>
                     <td><?= $shopProduct->stock->quantity ?> 個</td>

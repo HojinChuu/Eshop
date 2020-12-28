@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @param string $page
+ * @param $page
  */
 function redirect($page)
 {

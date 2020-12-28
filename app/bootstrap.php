@@ -14,4 +14,3 @@ require_once "helpers/mail_helper.php";
 spl_autoload_register(function ($className) {
     require_once "libraries/" . $className . ".php";
 });
-
