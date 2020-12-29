@@ -79,3 +79,17 @@ order_count INT,
 product_ranking VARCHAR(255),
 date VARCHAR(255) UNIQUE KEY
 );
+
+CREATE TABLE comments (
+id INT auto_increment PRIMARY KEY,
+user_id INT,
+product_id INT,
+reply TEXT,
+created_at datetime DEFAULT CURRENT_TIMESTAMP,
+FOREIGN KEY (user_id)
+REFERENCES users (id)
+ON DELETE CASCADE,
+FOREIGN KEY (product_id)
+REFERENCES products (id)
+ON DELETE CASCADE
+)

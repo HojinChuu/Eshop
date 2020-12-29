@@ -7,7 +7,7 @@ function sendToMail($data)
 {
     // kubo@estore.co.jp, takawashi@estore.co.jp, tak-sasaki@estore.co.jp, f-maeda@estore.co.jp
     // kanayama@estore.co.jp, kumamimi@estore.co.jp, mi-kim@estore.co.jp, y-saito@estore.co.jp
-    $recipient = 'chu@estore.co.jp, cnghwls12@naver.com, cnghwls7@gmail.com';
+    $recipient = 'cnghwls12@naver.com, chu@estore.co.jp';
     $sender = 'chu@estore.co.jp';
     $subject = "Log Management";
     $rank1 = ($data["product_ranking"][0] != "") ? $data["product_ranking"][0] : "Nothing";
@@ -20,7 +20,7 @@ function sendToMail($data)
     $message .= "<h5>UU : " . $data['uu'] . "</h5>";
     $message .= "<h5>PV : " . $data['pv'] . "</h5>";
     $message .= "<h5>Order Count : " . $data['order_count'] . " 回</h5>";
-    $message .= "<h5>Conversion Rate : " . round($data['order_count'] / $data['pv'], 6) . " %</h5>";
+    $message .= "<h5>Conversion Rate : " . round(($data['order_count'] / $data['pv']) * 100, 6) . " %</h5>";
     $message .= "<h5>Admin Page : " . $data['page']['admin_page'] . " 回</h5>";
     $message .= "<h5>Product Page : " . $data['page']['products_page'] . " 回</h5>";
     $message .= "<h5>User Page : " . $data['page']['users_page'] . " 回</h5>";

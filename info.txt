@@ -80,9 +80,3 @@ smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 
 # Cron Setting
 
-
-
-
-
-
-

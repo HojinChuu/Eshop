@@ -147,4 +147,24 @@ class Order
 
         return $this->db->execute() ? true : false;
     }
+
+    /**
+     * @param $user_id
+     * @param $product_id
+     * @return bool
+     */
+    public function commentProductHistory($user_id, $product_id)
+    {
+        $sql = "SELECT * FROM orders 
+                    LEFT JOIN order_items
+                    ON orders.id = order_items.order_id
+                    WHERE orders.user_id = :user_id
+                    AND order_items.product_id = :product_id";
+        $this->db->query($sql);
+        $this->db->bind(":user_id", $user_id);
+        $this->db->bind(":product_id", $product_id);
+        $this->db->execute();
+
+        return $this->db->rowCount() !== 0 ? true : false;
+    }
 }

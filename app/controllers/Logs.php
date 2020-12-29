@@ -136,7 +136,7 @@ class Logs extends Controller
         ];
 
         if ($this->logModel->create($data)) {
-            $this->mailBtn();
+            sendToMail($data);
         }
     }
 

@@ -5,6 +5,9 @@ class Products extends Controller
     public function __construct()
     {
         $this->productModel = $this->model("Product");
+        $this->userModel = $this->model("User");
+        $this->commentModel = $this->model("Comment");
+        $this->orderModel = $this->model("Order");
     }
 
     public function index()
@@ -20,7 +23,17 @@ class Products extends Controller
     public function show($id)
     {
         $product = $this->productModel->getProductById($id);
-        $data = ["product" => $product];
+        $comments = $this->commentModel->show($id);
+
+        foreach ($comments as $key => $comment) {
+            $comment->user = $this->userModel->getUserById($comment->user_id);
+        }
+
+        $data = [
+            "product" => $product,
+            "comment" => $comments
+        ];
+
         $this->view("products/show", $data);
     }
 
@@ -210,5 +223,46 @@ class Products extends Controller
         ];
 
         $this->view("admin/shop/updateForm", $data);
+    }
+
+    /**
+     * @param $product_id
+     */
+    public function createComment($product_id)
+    {
+        $user_id = $_SESSION["user_id"];
+        $reply = htmlspecialchars($_POST["reply"]);
+
+        $data = [
+            "user_id" => $user_id,
+            "product_id" => $product_id,
+            "reply" => $reply
+        ];
+
+        if ($this->orderModel->commentProductHistory($user_id, $product_id)) {
+            if ($this->commentModel->commentProtectDuplicate($user_id, $product_id)) {
+                $this->commentModel->create($data);
+            } else {
+                flash("comment_error", "もうレビューを書きました", "alert alert-danger");
+            }
+        } else {
+            flash("comment_error", "購入しなかった商品はレビューが書けません", "alert alert-danger");
+        }
+
+        $this->show($product_id);
+    }
+
+    /**
+     * @param mixed ...$id
+     */
+    public function destroyComment(...$id)
+    {
+        $comment_id = $id[0];
+        $product_id = $id[1];
+
+        $this->commentModel->destroy($comment_id);
+        flash("comment_destroy_success", "レビューを削除しました");
+
+        $this->show($product_id);
     }
 }

@@ -17,7 +17,7 @@
                 <td><?= $data["all_uu"] ?></td>
                 <td><?= $data["all_pv"] ?></td>
                 <td><?= $data["all_order_count"] ?></td>
-                <td><?= round($data["all_order_count"] / $data["all_pv"], 6) ?> %</td>
+                <td><?= round(($data["all_order_count"] / $data["all_pv"]) * 100, 6) ?> %</td>
             </tr>
         </table>
 
@@ -33,7 +33,7 @@
                 <td><?= $data["uu"] ?></td>
                 <td><?= $data["pv"] ?></td>
                 <td><?= $data["order_count"] ?></td>
-                <td><?= round($data["order_count"] / $data["pv"], 6) ?> %</td>
+                <td><?= round(($data["order_count"] / $data["pv"]) * 100, 6) ?> %</td>
             </tr>
         </table>
     </div>
