@@ -2,7 +2,7 @@
 
 // SET PATH
 define("APPROOT", dirname(__DIR__));
-define("URLROOT", dirname("http://192.168.128.119"));
+define("URLROOT", dirname("http://192.168.128.121"));
 define("SITENAME", "SHOP");
 
 // SET DB_INFO

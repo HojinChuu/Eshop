@@ -7,7 +7,10 @@
                 </button>
             </div>
             <form action="<?= URLROOT ?>/users/moneyCharge/<?= $_SESSION["user_id"] ?>" method="post">
-                <div class="modal-body">
+                <div class="modal-body input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">￥</span>
+                    </div>
                     <input type="number" name="money" class="form-control" required />
                 </div>
                 <div class="modal-footer">

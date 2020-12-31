@@ -67,16 +67,16 @@ REFERENCES products (id)
 ON DELETE CASCADE
 );
 
-CREATE TABLE logs (
+CREATE TABLE access_logs (
 uu INT,
 pv INT,
-admin_page INT,
-products_page INT,
-users_page INT,
-wishlists_page INT,
-orders_page INT,
 order_count INT,
-product_ranking VARCHAR(255),
+admin_page_count INT,
+product_page_count INT,
+user_page_count INT,
+wishlist_page_count INT,
+order_page_count INT,
+product_rank VARCHAR(255),
 date VARCHAR(255) UNIQUE KEY
 );
 

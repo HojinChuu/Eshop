@@ -7,7 +7,7 @@ class Logs extends Controller
         $this->userModel = $this->model("User");
         $this->orderModel = $this->model("Order");
         $this->productModel = $this->model("Product");
-        $this->logModel = $this->model("Log");
+        $this->logModel = $this->model("AccessLog");
     }
 
     public function adminLogPage()
@@ -32,25 +32,42 @@ class Logs extends Controller
         $this->adminLogPage();
     }
 
-    /**
-     * @return bool
-     */
     public function inputData()
     {
+        $uu = $this->getAccessIp();
+        $pv = $this->getAccessPage()["access_all_page"];
+        $access_page_count = $this->getAccessPage()["access_page_count"];
+        $product_ranking = $this->getOrderRank();
+        $access_date = $this->getAccessDate();
+        $order_count = $this->getOrderCount();
+
+        $data = [
+            "uu" => $uu,
+            "pv" => $pv,
+            "access_page_count" => $access_page_count,
+            "product_ranking" => $product_ranking,
+            "date" => $access_date,
+            "order_count" => $order_count,
+        ];
+
+        if ($this->logModel->create($data)) {
+            $allData = $this->getData();
+            sendToMail($allData);
+        }
+    }
+
+    /**
+     * @return int
+     */
+    private function getAccessIp()
+    {
         $user_ip = [];
-        $access_page = [];
-        $url = [];
-        $access_time = [];
-
         exec(ACCESS_ROOT . IP . RULE, $user_ip);
-        exec(ACCESS_ROOT . PAGE . RULE, $access_page);
-        exec(ACCESS_ROOT . URL . RULE, $url);
-        exec(ACCESS_ROOT . TIME . RULE, $access_time);
 
-        // uu
         foreach ($user_ip as $key => $ip) {
             $ip_result[] = explode(" ", trim($ip));
         }
+
         foreach ($ip_result as $key => $ip) {
             if (strpos($ip[1], "::")) {
                 unset($ip_result[$key]);
@@ -58,14 +75,23 @@ class Logs extends Controller
         }
         $access_user_count = count($ip_result);
 
-        // init page count
+        return $access_user_count;
+    }
+
+    /**
+     * @return array
+     */
+    private function getAccessPage()
+    {
+        $access_page = [];
+        exec(ACCESS_ROOT . PAGE . RULE, $access_page);
+
         $admin_page_count = 0;
         $products_page_count = 0;
         $users_page_count = 0;
         $wishlists_page_count = 0;
         $orders_page_count = 0;
 
-        // page access
         $count = 0;
         foreach ($access_page as $key => $page) {
             $page_result[] = explode(" ", trim($page));
@@ -86,19 +112,25 @@ class Logs extends Controller
             }
         }
 
-        // page
-        $access_page_count = [
-            "admin_page" => $admin_page_count,
-            "products_page" => $products_page_count,
-            "users_page" => $users_page_count,
-            "wishlists_page" => $wishlists_page_count,
-            "orders_page" => $orders_page_count,
+        $pageAndPv = [
+            "access_page_count" => [
+                "admin_page" => $admin_page_count,
+                "products_page" => $products_page_count,
+                "users_page" => $users_page_count,
+                "wishlists_page" => $wishlists_page_count,
+                "orders_page" => $orders_page_count,
+            ],
+            "access_all_page" => $count
         ];
 
-        // pv
-        $access_all_page = $count;
+        return $pageAndPv;
+    }
 
-        // ranking
+    /**
+     * @return string
+     */
+    private function getOrderRank()
+    {
         $order_items = $this->orderModel->getOrderItemsRanking();
 
         $popular_product_ranking = [];
@@ -109,35 +141,42 @@ class Logs extends Controller
         }
         $product_ranking = implode(",", $popular_product_ranking);
 
-        // date
+        return $product_ranking;
+    }
+
+    /**
+     * @return false|string
+     */
+    private function getAccessDate()
+    {
+        $access_time = [];
+        exec(ACCESS_ROOT . TIME . RULE, $access_time);
+
         $time_result = explode(" ", trim($access_time[0]));
         $date_result = substr($time_result[1], 1, 11);
         $date_result = strtr($date_result, '/', '-');
         $date_result = strtotime($date_result);
         $access_date = date('Y-m-d', $date_result);
 
-        // order count
+        return $access_date;
+    }
+
+    /**
+     * @return int
+     */
+    private function getOrderCount()
+    {
         $order_count = 0;
         $orders = $this->orderModel->getAllOrders();
+
         foreach ($orders as $order) {
             $created_at = substr($order->created_at, 0, 10);
-            if ($created_at == $access_date) {
+            if ($created_at == $this->getAccessDate()) {
                 $order_count++;
             }
         }
 
-        $data = [
-            "access_user_count" => $access_user_count,
-            "access_all_page" => $access_all_page,
-            "access_page_count" => $access_page_count,
-            "product_ranking" => $product_ranking,
-            "date" => $access_date,
-            "order_count" => $order_count,
-        ];
-
-        if ($this->logModel->create($data)) {
-            sendToMail($data);
-        }
+        return $order_count;
     }
 
     /**
@@ -148,35 +187,37 @@ class Logs extends Controller
         $yesterday = date('Y-m-d', $_SERVER['REQUEST_TIME'] - 86400);
 
         $logs = $this->logModel->getLogs();
-        $log = $this->logModel->getLog($yesterday);
+        $log = $this->logModel->getLog("2020-12-27");
 
-        $ranking = explode(",", $log->product_ranking);
+        if ($log) {
+            $ranking = explode(",", $log->product_rank);
 
-        $data = [
-            "all_uu" => $logs->all_uu,
-            "all_pv" => $logs->all_pv,
-            "all_page" => [
-                "admin_page" => $logs->all_admin_page,
-                "products_page" => $logs->all_products_page,
-                "users_page" => $logs->all_users_page,
-                "wishlists_page" => $logs->all_wishlists_page,
-                "orders_page" => $logs->all_orders_page,
-            ],
-            "all_order_count" => $logs->all_order_count,
-            "uu" => $log->uu,
-            "pv" => $log->pv,
-            "page" => [
-                "admin_page" => $log->admin_page,
-                "products_page" => $log->products_page,
-                "users_page" => $log->users_page,
-                "wishlists_page" => $log->wishlists_page,
-                "orders_page" => $log->orders_page,
-            ],
-            "order_count" => $log->order_count,
-            "product_ranking" => $ranking,
-            "date" => $log->date,
-        ];
+            $data = [
+                "all_uu" => $logs->all_uu,
+                "all_pv" => $logs->all_pv,
+                "all_page" => [
+                    "admin_page" => $logs->all_admin_page_count,
+                    "products_page" => $logs->all_product_page_count,
+                    "users_page" => $logs->all_user_page_count,
+                    "wishlists_page" => $logs->all_wishlist_page_count,
+                    "orders_page" => $logs->all_order_page_count,
+                ],
+                "all_order_count" => $logs->all_order_count,
+                "uu" => $log->uu,
+                "pv" => $log->pv,
+                "page" => [
+                    "admin_page" => $log->admin_page_count,
+                    "products_page" => $log->product_page_count,
+                    "users_page" => $log->user_page_count,
+                    "wishlists_page" => $log->wishlist_page_count,
+                    "orders_page" => $log->order_page_count,
+                ],
+                "order_count" => $log->order_count,
+                "product_ranking" => $ranking,
+                "date" => $log->date,
+            ];
 
-        return $data;
+            return $data;
+        }
     }
 }

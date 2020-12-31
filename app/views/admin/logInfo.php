@@ -1,8 +1,11 @@
 <?php require APPROOT . "/views/default/header.php"; ?>
 
     <h1>Logs</h1>
+<?php if ($data == null) : ?>
+    <p>...</p>
+<?php else : ?>
     <form action="<?= URLROOT ?>/logs/mailBtn" method="get" class="text-right">
-        <input type="submit" class="btn btn-dark btn-lg" value="Send Mail" />
+        <input type="submit" class="btn btn-dark btn-lg" value="Send Mail"/>
     </form>
     <div class="p-3">
         <table class="table table-bordered text-center">
@@ -68,7 +71,7 @@
                     <h2><?= $key + 1 ?></h2>
                     <div class="col-2 card">
                         <img class="card-img-top" src="<?= URLROOT . "/" . $product->image_path ?>" width="100"
-                             height="150" />
+                             height="150"/>
                         <div class="card-body">
                             <p class="card-text"><?= $product->name ?></p>
                             <p class="card-text">￥ <?= number_format($product->price, -2) ?></p>
@@ -80,5 +83,6 @@
             <p>Nothing...</p>
         <?php endif ?>
     </div>
+<?php endif ?>
 
 <?php require APPROOT . "/views/default/footer.php"; ?>
