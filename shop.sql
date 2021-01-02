@@ -68,6 +68,7 @@ ON DELETE CASCADE
 );
 
 CREATE TABLE access_logs (
+id INT auto_increment PRIMARY KEY,
 uu INT,
 pv INT,
 order_count INT,

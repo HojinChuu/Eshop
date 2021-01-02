@@ -17,7 +17,7 @@ class Wishlist
     public function create($user_id, $product_id)
     {
         $sql = "INSERT INTO wishList (user_id, product_id)
-                    VALUES (:user_id, :product_id)";
+                VALUES (:user_id, :product_id)";
         $this->db->query($sql);
         $this->db->bind(":user_id", $user_id);
         $this->db->bind(":product_id", $product_id);

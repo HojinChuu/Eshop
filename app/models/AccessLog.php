@@ -55,11 +55,20 @@ class AccessLog
      * @param $yesterday
      * @return mixed
      */
-    public function getLog($yesterday)
+    public function getLog($id)
     {
-        $sql = "SELECT * FROM access_logs WHERE date = :date";
+        $sql = "SELECT * FROM access_logs WHERE id = :id";
         $this->db->query($sql);
-        $this->db->bind(":date", $yesterday);
+        $this->db->bind(":id", $id);
+        $this->db->execute();
+
+        return $this->db->single();
+    }
+
+    public function getLastColumnId()
+    {
+        $sql = "SELECT id FROM access_logs ORDER BY id DESC LIMIT 1";
+        $this->db->query($sql);
         $this->db->execute();
 
         return $this->db->single();

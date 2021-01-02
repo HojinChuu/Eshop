@@ -184,10 +184,9 @@ class Logs extends Controller
      */
     private function getData()
     {
-        $yesterday = date('Y-m-d', $_SERVER['REQUEST_TIME'] - 86400);
-
+        $lastLog = $this->logModel->getLastColumnId();
         $logs = $this->logModel->getLogs();
-        $log = $this->logModel->getLog("2020-12-27");
+        $log = $this->logModel->getLog($lastLog->id);
 
         if ($log) {
             $ranking = explode(",", $log->product_rank);
