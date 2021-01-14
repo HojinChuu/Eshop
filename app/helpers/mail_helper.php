@@ -5,9 +5,8 @@
  */
 function sendToMail($data)
 {
-    // kubo@estore.co.jp, takawashi@estore.co.jp, tak-sasaki@estore.co.jp, f-maeda@estore.co.jp
-    // kanayama@estore.co.jp, kumamimi@estore.co.jp, mi-kim@estore.co.jp, y-saito@estore.co.jp
-    $recipient = 'cnghwls12@naver.com, chu@estore.co.jp';
+    // $recipient = 'cnghwls12@naver.com, chu@estore.co.jp';
+    $recipient = 'kubo@estore.co.jp, takawashi@estore.co.jp, tak-sasaki@estore.co.jp, f-maeda@estore.co.jp, kanayama@estore.co.jp, kumamimi@estore.co.jp, mi-kim@estore.co.jp, y-saito@estore.co.jp';
     $sender = 'chu@estore.co.jp';
     $subject = "Log Management";
     $rank1 = ($data["product_ranking"][0] != "") ? $data["product_ranking"][0] : "Nothing";
@@ -16,7 +15,9 @@ function sendToMail($data)
     $rank4 = isset($data["product_ranking"][3]) ? $data["product_ranking"][3] : "Nothing";
     $rank5 = isset($data["product_ranking"][4]) ? $data["product_ranking"][4] : "Nothing";
 
-    $message = "<h2>" . $data["date"] . "</h2>";
+    $message = "<p>お疲れ様です。チュホジンです。</p>";
+    $message .= "<p>ショップの集計です。</p>";
+    $message .= "<h2>" . $data["date"] . "</h2>";
     $message .= "<h5>UU : " . $data['uu'] . "</h5>";
     $message .= "<h5>PV : " . $data['pv'] . "</h5>";
     $message .= "<h5>Order Count : " . $data['order_count'] . " 回</h5>";

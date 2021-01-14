@@ -77,6 +77,9 @@ smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
 32. sudo systemctl restart postfix
 33. https://myaccount.google.com/lesssecureapps -> 여기에서 체크
 
+/etc/logrotate.d/apache2
+644
+sudo logrorate /etc/logrotate.d/apache2 << 이명령어 때문인가.. 잘되네
 
 # Cron Setting
 
